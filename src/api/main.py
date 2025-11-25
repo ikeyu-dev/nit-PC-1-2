@@ -2,6 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from src.api.v1.realtime_judge import realtime_judge as realtime_judge_router
 
 
 app = FastAPI()
@@ -17,6 +18,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(realtime_judge_router.router)
 
 
 @app.get(
