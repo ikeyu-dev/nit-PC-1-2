@@ -150,8 +150,6 @@ python main.py
 **ターミナル1: APIサーバー（Docker使用）**
 
 ```bash
-cd /Users/uyuyu/02.code/physical-computing-1-2
-
 # .envファイルを作成（初回のみ）
 cp .env.example .env
 # .envファイルを編集して<RASPI_IP>を実際のIPアドレスに変更
@@ -163,7 +161,6 @@ docker-compose up --build
 または、Dockerを使わない場合:
 
 ```bash
-cd /Users/uyuyu/02.code/physical-computing-1-2
 source venv/bin/activate
 RASPI_API_URL="http://<RASPI_IP>:8000" uvicorn src.api.main:app --host 0.0.0.0 --port 7001 --reload
 ```
@@ -173,7 +170,6 @@ APIサーバーは `http://localhost:7001` で起動します。
 **ターミナル2: 手の形認識プログラム**
 
 ```bash
-cd /Users/uyuyu/02.code/physical-computing-1-2
 source venv/bin/activate
 python src/deep-learning/realtime_judge.py
 ```
@@ -185,8 +181,6 @@ python src/deep-learning/realtime_judge.py
 ### PC側
 
 ```bash
-cd /Users/uyuyu/02.code/physical-computing-1-2
-
 # 仮想環境の作成
 python3 -m venv venv
 
