@@ -1,9 +1,9 @@
 """
 モーター制御モジュール（ラズパイ5対応版）
 左モーター（後輪）を制御して、手の形に応じて動作を変える
-- Rock（グー）: 停止
-- Paper（パー）: 後退
-- Pointing_UP（人差し指）: 直進
+- Rock（グー）: グー → stop() が呼ばれる → 車は停止
+- Paper（パー）: パー → forward() が呼ばれる → モーターが順回転 → 車は直進
+- Pointing_UP（人差し指）: 人差し指 → backward() が呼ばれる → モーターが逆回転 → 車は後退
 
 rpi-lgpioを使用
 """
@@ -53,7 +53,10 @@ class MotorController:
         print("Motor controller initialized (lgpio) - Both motors")
 
     def stop(self):
-        """停止"""
+        """
+        停止
+        グー → stop() が呼ばれる → 車は停止
+        """
         # 左モーター停止
         lgpio.gpio_write(self.h, self.L_IN1, 0)
         lgpio.gpio_write(self.h, self.L_IN2, 0)
@@ -67,32 +70,34 @@ class MotorController:
 
     def forward(self, speed=40):
         """
-        直進（モーターは逆回転）
+        直進
+        パー → forward() が呼ばれる → モーターが順回転 → 車は直進
         speed: 0-100の速度
         """
-        # 左モーター前進（逆回転）
-        lgpio.gpio_write(self.h, self.L_IN1, 0)
-        lgpio.gpio_write(self.h, self.L_IN2, 1)
+        # 左モーター前進（順回転）
+        lgpio.gpio_write(self.h, self.L_IN1, 1)
+        lgpio.gpio_write(self.h, self.L_IN2, 0)
         lgpio.tx_pwm(self.h, self.L_PWM, 100, speed)
-        # 右モーター前進（逆回転）
-        lgpio.gpio_write(self.h, self.R_IN1, 0)
-        lgpio.gpio_write(self.h, self.R_IN2, 1)
+        # 右モーター前進（順回転）
+        lgpio.gpio_write(self.h, self.R_IN1, 1)
+        lgpio.gpio_write(self.h, self.R_IN2, 0)
         lgpio.tx_pwm(self.h, self.R_PWM, 100, speed)
         self.current_state = "forward"
         print(f"Motor: FORWARD (speed={speed}%)")
 
     def backward(self, speed=40):
         """
-        後退（モーターは順回転）
+        後退
+        人差し指 → backward() が呼ばれる → モーターが逆回転 → 車は後退
         speed: 0-100の速度
         """
-        # 左モーター後退（順回転）
-        lgpio.gpio_write(self.h, self.L_IN1, 1)
-        lgpio.gpio_write(self.h, self.L_IN2, 0)
+        # 左モーター後退（逆回転）
+        lgpio.gpio_write(self.h, self.L_IN1, 0)
+        lgpio.gpio_write(self.h, self.L_IN2, 1)
         lgpio.tx_pwm(self.h, self.L_PWM, 100, speed)
-        # 右モーター後退（順回転）
-        lgpio.gpio_write(self.h, self.R_IN1, 1)
-        lgpio.gpio_write(self.h, self.R_IN2, 0)
+        # 右モーター後退（逆回転）
+        lgpio.gpio_write(self.h, self.R_IN1, 0)
+        lgpio.gpio_write(self.h, self.R_IN2, 1)
         lgpio.tx_pwm(self.h, self.R_PWM, 100, speed)
         self.current_state = "backward"
         print(f"Motor: BACKWARD (speed={speed}%)")
@@ -100,9 +105,9 @@ class MotorController:
     def control_by_hand_shape(self, hand_shape: str):
         """
         手の形に応じてモーターを制御
-        - Rock（グー）: 停止
-        - Paper（パー）: 後退
-        - Pointing_UP（人差し指）: 直進
+        - Rock（グー）: グー → stop() が呼ばれる → 車は停止
+        - Paper（パー）: パー → forward() が呼ばれる → モーターが順回転 → 車は直進
+        - Pointing_UP（人差し指）: 人差し指 → backward() が呼ばれる → モーターが逆回転 → 車は後退
         """
         try:
             shape = HandShape(hand_shape)
@@ -110,9 +115,9 @@ class MotorController:
             if shape == HandShape.ROCK:
                 self.stop()
             elif shape == HandShape.PAPER:
-                self.backward()
-            elif shape == HandShape.POINTING_UP:
                 self.forward()
+            elif shape == HandShape.POINTING_UP:
+                self.backward()
 
             return True
         except ValueError:
