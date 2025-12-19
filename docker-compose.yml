@@ -1,8 +1,14 @@
-version: "3"
+version: "3.8"
 services:
     api:
-        container_name: phisical-computing-2
-        build: .
+        container_name: physical-computing-api
+        build:
+            context: .
+            dockerfile: dockerfile
         ports:
             - "7001:7001"
+        environment:
+            - RASPI_API_URL=http://172.20.10.2:8000
+        volumes:
+            - ./src:/app/src
         restart: unless-stopped

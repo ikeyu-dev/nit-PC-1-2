@@ -13,7 +13,9 @@ hands = mp_hands.Hands(
 mp_drawing = mp.solutions.drawing_utils
 
 # モデルの読み込み
-model = load_model("model/hand_model.keras")
+import os
+model_path = os.path.join(os.path.dirname(__file__), "model/hand_model.keras")
+model = load_model(model_path)
 
 
 # 手のランドマークを抽出する関数
@@ -31,7 +33,7 @@ def predict_hand_shape(landmarks):
 
     # モデルで予測
     prediction = model.predict(landmarks)
-    predicted_class = np.argmax(prediction)  # predicted_classは
+    predicted_class = np.argmax(prediction)
 
     # ラベルを返す
     if predicted_class == 0:
@@ -99,7 +101,7 @@ while cap.isOpened():
                 print(f"Error sending result to server: {e}")
 
     # 別ウィンドウで描画
-    # cv2.imshow("Detection", frame)
+    cv2.imshow("Hand Detection", frame)
 
     time.sleep(0.1)  # 通信の頻度制限
 

@@ -1,13 +1,17 @@
 FROM python:3.12
 
-WORKDIR /
+WORKDIR /app
 
-COPY ./requirements.txt /requirements.txt
+COPY ./requirements.txt /app/requirements.txt
 
 RUN apt-get update && apt-get install -y libgl1-mesa-glx || apt-get install -y libgl1
 
-RUN pip install -r /requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt
 
-COPY ./src /src
+COPY ./src /app/src
 
-CMD ["uvicorn", "src.api.main:app", "--reload",  "--host", "0.0.0.0", "--port", "7001"]
+ENV RASPI_API_URL=http://172.20.10.2:8000
+
+EXPOSE 7001
+
+CMD ["uvicorn", "src.api.main:app", "--reload", "--host", "0.0.0.0", "--port", "7001"]

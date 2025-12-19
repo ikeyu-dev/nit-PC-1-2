@@ -9,3 +9,5 @@ scikit_learn
 SQLAlchemy
 tensorflow
 uvicorn
+pygame
+httpx
