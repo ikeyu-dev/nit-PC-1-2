@@ -1,9 +1,9 @@
 """
 モーター制御モジュール
 左モーター（後輪）を制御して、手の形に応じて動作を変える
-- Rock（グー）: 停止
-- Paper（パー）: 後退
-- Pointing_UP（人差し指）: 直進
+- Rock（グー）: グー → stop() が呼ばれる → 車は停止
+- Paper（パー）: パー → forward() が呼ばれる → モーターが順回転 → 車は直進
+- Pointing_UP（人差し指）: 人差し指 → backward() が呼ばれる → モーターが逆回転 → 車は後退
 
 ラズパイ5対応: rpi-lgpioを使用
 """
@@ -50,7 +50,10 @@ class MotorController:
         self.current_state = None
 
     def stop(self):
-        """停止"""
+        """
+        停止
+        グー → stop() が呼ばれる → 車は停止
+        """
         GPIO.output(self.L_IN1, GPIO.LOW)
         GPIO.output(self.L_IN2, GPIO.LOW)
         self.pwm_left.ChangeDutyCycle(0)
@@ -59,22 +62,24 @@ class MotorController:
 
     def forward(self, speed=40):
         """
-        直進（モーターは逆回転）
+        直進
+        パー → forward() が呼ばれる → モーターが順回転 → 車は直進
         speed: 0-100の速度
         """
-        GPIO.output(self.L_IN1, GPIO.LOW)
-        GPIO.output(self.L_IN2, GPIO.HIGH)
+        GPIO.output(self.L_IN1, GPIO.HIGH)
+        GPIO.output(self.L_IN2, GPIO.LOW)
         self.pwm_left.ChangeDutyCycle(speed)
         self.current_state = "forward"
         print(f"Motor: FORWARD (speed={speed}%)")
 
     def backward(self, speed=40):
         """
-        後退（モーターは順回転）
+        後退
+        人差し指 → backward() が呼ばれる → モーターが逆回転 → 車は後退
         speed: 0-100の速度
         """
-        GPIO.output(self.L_IN1, GPIO.HIGH)
-        GPIO.output(self.L_IN2, GPIO.LOW)
+        GPIO.output(self.L_IN1, GPIO.LOW)
+        GPIO.output(self.L_IN2, GPIO.HIGH)
         self.pwm_left.ChangeDutyCycle(speed)
         self.current_state = "backward"
         print(f"Motor: BACKWARD (speed={speed}%)")
@@ -82,9 +87,9 @@ class MotorController:
     def control_by_hand_shape(self, hand_shape: str):
         """
         手の形に応じてモーターを制御
-        - Rock（グー）: 停止
-        - Paper（パー）: 後退
-        - Pointing_UP（人差し指）: 直進
+        - Rock（グー）: グー → stop() が呼ばれる → 車は停止
+        - Paper（パー）: パー → forward() が呼ばれる → モーターが順回転 → 車は直進
+        - Pointing_UP（人差し指）: 人差し指 → backward() が呼ばれる → モーターが逆回転 → 車は後退
         """
         try:
             shape = HandShape(hand_shape)
@@ -92,9 +97,9 @@ class MotorController:
             if shape == HandShape.ROCK:
                 self.stop()
             elif shape == HandShape.PAPER:
-                self.backward()
-            elif shape == HandShape.POINTING_UP:
                 self.forward()
+            elif shape == HandShape.POINTING_UP:
+                self.backward()
 
             return True
         except ValueError:
