@@ -32,8 +32,8 @@ python main.py
 
 **動作:**
 - `Rock`（グー）: 停止
-- `Paper`（パー）: 後退
-- `Pointing_UP`（人差し指）: 直進
+- `Paper`（パー）: 直進
+- `Pointing_UP`（人差し指）: 後退
 
 **レスポンス:**
 ```json

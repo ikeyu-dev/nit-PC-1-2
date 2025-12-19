@@ -31,8 +31,8 @@ async def control_motor(request: HandShapeRequest):
     """
     手の形を受け取ってモーターを制御
     - Rock（グー）: 停止
-    - Paper（パー）: 後退
-    - Pointing_UP（人差し指）: 直進
+    - Paper（パー）: 直進
+    - Pointing_UP（人差し指）: 後退
     """
     hand_shape = request.hand_shape
 
