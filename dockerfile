@@ -10,7 +10,8 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 
 COPY ./src /app/src
 
-ENV RASPI_API_URL=http://172.20.10.2:8000
+# 環境変数は.envまたはdocker-composeから設定される
+ENV RASPI_API_URL=http://localhost:8000
 
 EXPOSE 7001
 

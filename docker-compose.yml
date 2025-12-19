@@ -8,7 +8,7 @@ services:
         ports:
             - "7001:7001"
         environment:
-            - RASPI_API_URL=http://172.20.10.2:8000
+            - RASPI_API_URL=${RASPI_API_URL}
         volumes:
             - ./src:/app/src
         restart: unless-stopped
