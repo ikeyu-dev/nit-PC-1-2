@@ -34,7 +34,7 @@ Webカメラで手の形をリアルタイムに認識し、その形に応じ�
 │  HTTP Request                                               │
 └──────┼──────────────────────────────────────────────────────┘
        │
-       │ POST http://localhost:7001/realtime/judge
+       │ GET http://localhost:7001/realtime/judge?hand_shape={shape}
        │
 ┌──────▼──────────────────────────────────────────────────────┐
 │ FastAPI Server (Docker)                                     │
@@ -83,7 +83,7 @@ Webカメラで手の形をリアルタイムに認識し、その形に応じ�
 
 - **モデル学習**: [src/deep-learning/model.py](src/deep-learning/model.py)
   - TensorFlowを使用した3クラス分類モデル
-  - 入力: 21個のランドマークのx, y座標（42次元）
+  - 入力: 21個のランドマークのx, y, z座標（63次元）
   - 出力: Rock, Paper, Pointing_UPの確率
 
 - **リアルタイム判別**: [src/deep-learning/realtime_judge.py](src/deep-learning/realtime_judge.py)
@@ -118,8 +118,9 @@ Webカメラで手の形をリアルタイムに認識し、その形に応じ�
   - forward(), backward(), stop()メソッド
 
 - **Raspberry Pi 5対応**: [src/raspi/motor_controller_pi5.py](src/raspi/motor_controller_pi5.py)
-  - gpiozeroライブラリを使用
+  - lgpioライブラリを使用
   - Raspberry Pi 5の新しいGPIOシステムに対応
+  - 左モーター: GPIO 17, 27, 4 / 右モーター: GPIO 23, 24, 18を使用
 
 ## 起動方法
 
@@ -208,12 +209,12 @@ scp -r src/raspi/* <USER>@<RASPI_IP>:~/raspi/
 
 MediaPipeは手の21個のランドマーク（関節点）を検出します：
 - 各ランドマークは3次元座標（x, y, z）を持つ
-- 本システムではx, y座標のみを使用（42次元ベクトル���
+- 本システムではx, y, z座標を使用（63次元ベクトル）
 - 検出精度が高く、リアルタイム処理が可能
 
 ### TensorFlowモデルの構造
 
-- 入力層: 42次元（21ランドマーク × 2座標）
+- 入力層: 63次元（21ランドマーク × 3座標）
 - 隠れ層: 全結合層（Dense）
 - 出力層: 3クラス（Softmax活性化関数）
 - 学習済みモデル: `src/deep-learning/model/hand_model.keras`
@@ -229,11 +230,12 @@ MediaPipeは手の21個のランドマーク（関節点）を検出します：
 **Raspberry Pi 4以前:**
 - RPi.GPIOライブラリ使用
 - BCMモードでピン番号指定
-- PWM周波数: 1000Hz
+- PWM周波数: 100Hz
 
 **Raspberry Pi 5:**
-- gpiozeroライブラリ使用
+- lgpioライブラリ使用
 - 新しいGPIOシステム（RP1チップ）に対応
+- PWM周波数: 100Hz
 
 ## 開発環境
 
