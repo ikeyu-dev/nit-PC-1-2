@@ -69,11 +69,11 @@ def collect_landmarks(label):
 input("Rock")
 collect_landmarks("rock")
 
-# パー（指示：「後退」）
+# パー（指示：「直進」）
 input("Paper")
 collect_landmarks("paper")
 
-# 人差し指のみ（ランドーマーク5, 6, 7, 8番）（指示：「直進」）
+# 人差し指のみ（ランドーマーク5, 6, 7, 8番）（指示：「後退」）
 input("Pointing_UP (landmark: 5, 6, 7, 8)")
 collect_landmarks("pointing_up")
 

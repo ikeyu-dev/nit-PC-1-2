@@ -7,7 +7,7 @@
 
 ### 1. 依存関係のインストール
 ```bash
-pip install fastapi uvicorn RPi.GPIO
+pip install -r requirements.txt
 ```
 
 ### 2. サーバーの起動
@@ -113,12 +113,12 @@ export RASPI_API_URL="http://192.168.1.100:8000"
 # 直進
 curl -X POST http://localhost:8000/motor/control \
   -H "Content-Type: application/json" \
-  -d '{"hand_shape": "Pointing_UP"}'
+  -d '{"hand_shape": "Paper"}'
 
 # 後退
 curl -X POST http://localhost:8000/motor/control \
   -H "Content-Type: application/json" \
-  -d '{"hand_shape": "Paper"}'
+  -d '{"hand_shape": "Pointing_UP"}'
 
 # 停止
 curl -X POST http://localhost:8000/motor/control \
@@ -134,9 +134,20 @@ curl -X POST http://localhost:8000/motor/stop
 
 ## GPIO ピン配置
 
+### Raspberry Pi 4以前
+
 - L_IN1: GPIO 17 (ICの5番)
 - L_IN2: GPIO 27 (ICの6番)
 - L_PWM: GPIO 4 (ICの4番/Vref)
+
+### Raspberry Pi 5
+
+- L_IN1: GPIO 17 (ICの5番)
+- L_IN2: GPIO 27 (ICの6番)
+- L_PWM: GPIO 4 (ICの4番/Vref)
+- R_IN1: GPIO 23
+- R_IN2: GPIO 24
+- R_PWM: GPIO 18
 
 ## 注意事項
 
